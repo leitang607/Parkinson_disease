@@ -5,22 +5,20 @@ import numpy as np
 import os
 from matplotlib import *
 import matplotlib.pyplot as plt
-#Define a nice colour map for gene expression
 colors2 = plt.cm.Reds(np.linspace(0, 0.7, 100))
 colors3 = plt.cm.Greys_r(np.linspace(0.6,1,100))
 colorsComb = np.vstack([colors3, colors2])
 mymap = colors.LinearSegmentedColormap.from_list('my_colormap', colorsComb)
-rcParams['pdf.fonttype']=42 # in order to save fonttype in AI
+rcParams['pdf.fonttype']=42 
 rcParams['ps.fonttype']=42
 
-# define parameters
 color_dict={
-    'DaNs': '#BF8219','Excitatory': '#00835A','GABA': '#BF480D','HdNs': '#FF6600','Inhibitory': '#FFB307','Endothelial': '#A19922',
-    'Ependymal': '#FFA388','Microglia': '#D64849','Astrocytes': '#6c00bf','OPC': '#74A0FF','NFOL': '#69A8E6','MOL': '#0000ff','Vasc': '#807B30',
-    'SMC/VLMC':'#9A9a9a','doublets': '#d6d6d6','low_quality':'#669D6A','Immune': '#f252c5','CHAT IN':'#ff7f0e','PVALB/TH IN':'#c49c94',
+    'DaNs': '#BF8219','Gluts': '#00835A','GABA': '#BF480D','HdNs': '#FF6600','Inhibitory': '#FFB307','Endothelial': '#A19922',
+    'Ependymal': '#FFA388','Microglia': '#D64849','Astrocytes': '#6c00bf','OPC': '#74A0FF','Oligo': '#0000ff','Vasc': '#807B30',
+    'SMC/VLMC':'#9A9a9a','doublets': '#d6d6d6','Immune': '#f252c5','CHAT IN':'#ff7f0e','PVALB/TH IN':'#c49c94',
     'SST/NPY IN':'#ffbb78','dSPN':'#98df8a','eSPN':'#1f77b4','iSPN':'#279e68'
 }
-snc_vmax_vmin_dict = {
+sn_vmax_vmin_dict = {
     'AQP4':(3.5,0),'TH':(1,0),'GAD2':(2,0),'GAD1':(2,0),'SLC17A6':(1,0),'MOG':(3,0),'PDGFRA':(2.5,0),'DCN':(2.5,0),'FLT1':(4,0),'HDC':(3,0),'C1QA':(3,0),
     'CSF1R':(3,0),'LSP1':(2,0),'CD200R1':(1,0),'CD3G':(2,0),'SLC6A3':(2,0),'CSPG4':(1.5,0),'VCAN':(4,0),'BCAS1':(3,0)
 }
@@ -50,11 +48,11 @@ def plot_umap(ad,sample_area):
     plt.rcParams['font.sans-serif']='Arial'
     plt.rcParams['font.size']=7
     plt.rcParams['font.weight']='normal'
-    sc.pl.umap(ad,color='label_5',ax=ax,legend_loc='',frameon=False,title='',s=2.5)
+    sc.pl.umap(ad,color='label',ax=ax,legend_loc='',frameon=False,title='',s=2.5)
     fig.savefig(f'./Figures1/{sample_area}_umap.png')
 
 # plot cell_No. and cell_gene counts
-def plot_cell_proportion(ad_snc,sample_area):
+def plot_cell_proportion(ad_sn,sample_area):
     fig = plt.figure(figsize=(8.5,4.5),dpi=300)
     grid = plt.GridSpec(1,9,hspace=0.2,wspace=0.1)
     plt.gcf().subplots_adjust(bottom=0.2)
@@ -62,15 +60,15 @@ def plot_cell_proportion(ad_snc,sample_area):
     ax_cell_number = fig.add_subplot(grid[0,4:5])
     ax_genes = fig.add_subplot(grid[0,5:7])
     ad_cell_rate = fig.add_subplot(grid[0,7:9])
-    cell_cluster_order = ad_snc.obs['label_5'].value_counts().index
-    expression = pd.DataFrame(ad_snc.layers['counts'].A,index = ad_snc.obs_names,columns = ad_snc.var_names)
-    expression['label_5']=ad_snc.obs['label_5']
-    filter_exp = expression.groupby('label_5').apply(lambda x:(x>1).sum(0))
+    cell_cluster_order = ad_sn.obs['label'].value_counts().index
+    expression = pd.DataFrame(ad_sn.layers['counts'].A,index = ad_sn.obs_names,columns = ad_sn.var_names)
+    expression['label']=ad_sn.obs['label']
+    filter_exp = expression.groupby('label').apply(lambda x:(x>1).sum(0))
     detected_gene = (filter_exp>1).sum(1)
     cell_type = detected_gene.index.tolist()
-    cell_count=ad_snc.obs.groupby('label_5').size()
+    cell_count=ad_sn.obs.groupby('label').size()
     cell_count = cell_count[cell_cluster_order]
-    size = ad_snc.obs.groupby('label_5').size()
+    size = ad_sn.obs.groupby('label').size()
     props = size*100/size.sum()
     props = props[cell_cluster_order]
     # plot cell counts
@@ -127,7 +125,7 @@ def plot_cell_proportion(ad_snc,sample_area):
             counter+=9
         ad_cell_rate.yaxis.set_major_locator(plt.NullLocator())
         ad_cell_rate.xaxis.set_major_locator(plt.NullLocator())
-        ad_cell_rate.spines['bottom'].set_visible(False)#设置边框是否可见
+        ad_cell_rate.spines['bottom'].set_visible(False)
         ad_cell_rate.spines['right'].set_visible(False)
         ad_cell_rate.spines['top'].set_visible(False)
         ad_cell_rate.spines['left'].set_visible(False)
@@ -136,8 +134,8 @@ def plot_cell_proportion(ad_snc,sample_area):
 
 # plot PD control proportion
 def plot_PD_control_proportion(ad,sample_area):
-    cell_rate = pd.crosstab(ad.obs['exp_condition1'],ad.obs['label_5'])
-    all_cells = ad.obs['exp_condition1'].value_counts()
+    cell_rate = pd.crosstab(ad.obs['Condition'],ad.obs['label'])
+    all_cells = ad.obs['Condition'].value_counts()
     plot_cell_rate = pd.DataFrame(index=cell_rate.index,columns=cell_rate.columns)
     for i in cell_rate.columns:
         plot_cell_rate[i]=cell_rate[i]/all_cells
@@ -177,31 +175,31 @@ if os.path.exists('Figures1'):
     pass
 else:
     os.mkdir('Figures1')
-ad_snc = sc.read('./snc_figout.h5')
-color_label_5 = [color_dict.get(i) for i in ad_snc.obs['label_5'].cat.categories]
-ad_snc.uns['label_5_colors']=color_label_5
-plot_cell_proportion(ad_snc,'snc')
-plot_PD_control_proportion(ad_snc[ad_snc.obs['seq_type']=='10x_nuclear',],'snc')
-plot_umap(ad_snc,'snc') # plot umap and save fig
-umap_position = pd.DataFrame(ad_snc.obsm['X_umap'],index=ad_snc.obs_names,columns=['X','Y'])
-exp_matrix = ad_snc.to_df()
-for i in snc_vmax_vmin_dict:  # plot each genes and save fig
-    plot_umap_genes(umap_position,exp_matrix,'snc',i,snc_vmax_vmin_dict.get(i)[0],snc_vmax_vmin_dict.get(i)[1])
+ad_sn = sc.read('../data/sn_umap.h5')
+color_label = [color_dict.get(i) for i in ad_sn.obs['label'].cat.categories]
+ad_sn.uns['label_colors']=color_label
+plot_cell_proportion(ad_sn,'sn')
+plot_PD_control_proportion(ad_sn[ad_sn.obs['seq_type']=='10x_nuclear',],'sn')
+plot_umap(ad_sn,'sn') # plot umap and save fig
+umap_position = pd.DataFrame(ad_sn.obsm['X_umap'],index=ad_sn.obs_names,columns=['X','Y'])
+exp_matrix = ad_sn.to_df()
+for i in sn_vmax_vmin_dict:  # plot each genes and save fig
+    plot_umap_genes(umap_position,exp_matrix,'sn',i,sn_vmax_vmin_dict.get(i)[0],sn_vmax_vmin_dict.get(i)[1])
 # plot all indicator
-for indicator in ['DaNs','Excitatory','Inhibitory','Microglia','Astrocytes','MOL']:
+for indicator in ['DaNs','Gluts','Inhibitory','Microglia','Astrocytes','Oligo']:
     fig,ax = plt.subplots(figsize=(2,2),dpi=600)
     if indicator =='Inhibitory':
-        ax.scatter(umap_position['X'],umap_position['Y'],marker='o',c=[{'GABA': '#BF480D','Inhibitory': '#FFB307'}.get(x,'grey') for x in ad_snc.obs['label_5']],s=0.2,linewidths=0)
+        ax.scatter(umap_position['X'],umap_position['Y'],marker='o',c=[{'GABA': '#BF480D','Inhibitory': '#FFB307'}.get(x,'grey') for x in ad_sn.obs['label']],s=0.2,linewidths=0)
     else:
-        ax.scatter(umap_position['X'],umap_position['Y'],marker='o',c=[{key:value for key,value in color_dict.items() if key==indicator}.get(x,'grey') for x in ad_snc.obs['label_5']],s=0.2,linewidths=0)
+        ax.scatter(umap_position['X'],umap_position['Y'],marker='o',c=[{key:value for key,value in color_dict.items() if key==indicator}.get(x,'grey') for x in ad_sn.obs['label']],s=0.2,linewidths=0)
     ax.axis('off')
-    fig.savefig(f'./Figures2/{indicator}_umap_indicator.png')
+    fig.savefig(f'./Figures/{indicator}_umap_indicator.png')
 
 
 #load putamen dataset and plot...
-ad_putamen = sc.read('./putamen_figout.h5')
-color_label_5 = [color_dict.get(i) for i in ad_putamen.obs['label_5'].cat.categories]
-ad_putamen.uns['label_5_colors']=color_label_5
+ad_putamen = sc.read('../data/putamen_umap.h5')
+color_label = [color_dict.get(i) for i in ad_putamen.obs['label'].cat.categories]
+ad_putamen.uns['label_colors']=color_label
 plot_PD_control_proportion(ad_putamen,'putamen')
 plot_umap(ad_putamen,'putamen') # plot umap and save fig
 umap_position = pd.DataFrame(ad_putamen.obsm['X_umap'],index=ad_putamen.obs_names,columns=['X','Y'])
