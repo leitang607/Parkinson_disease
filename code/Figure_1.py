@@ -141,11 +141,11 @@ def plot_PD_control_proportion(ad,sample_area):
         plot_cell_rate[i]=cell_rate[i]/all_cells
     plot_cell_rate = plot_cell_rate/plot_cell_rate.sum(0)
     plot_cell_rate = plot_cell_rate.sort_values(by='control',axis=1)
-    plot_cell_rate = plot_cell_rate.loc[['control','PD'],]
+    plot_cell_rate = plot_cell_rate.loc[['control','MPTP'],]
     plt.rcParams['font.sans-serif']='Arial'
     plt.rcParams['font.size']=7
     plt.rcParams['font.weight']='normal'
-    sample_color={'control':'#86C166','PD':'#EF7A82'}
+    sample_color={'control':'#86C166','MPTP':'#EF7A82'}
     fig,ax = plt.subplots(figsize=(3.5,3),dpi=300,constrained_layout=True)
     counter=1
     for i in plot_cell_rate.columns:
@@ -167,7 +167,7 @@ def plot_PD_control_proportion(ad,sample_area):
         ax.set_ylim([0.5,len(plot_cell_rate.columns)+0.5])
         ax.xaxis.set_ticks_position('top') 
         ax.set_title('% Cells',fontsize=14)
-        fig.savefig(f'./Figures1/cell_rate_{sample_area}.pdf')
+        fig.savefig(f'./Figures1/cell_rate_{sample_area}.f')
         fig.savefig(f'./Figures1/cell_rate_{sample_area}.png')    
 
 
@@ -179,9 +179,9 @@ ad_sn = sc.read('../data/sn_umap.h5')
 color_label = [color_dict.get(i) for i in ad_sn.obs['label'].cat.categories]
 ad_sn.uns['label_colors']=color_label
 plot_cell_proportion(ad_sn,'sn')
-plot_PD_control_proportion(ad_sn[ad_sn.obs['seq_type']=='10x_nuclear',],'sn')
+plot__control_proportion(ad_sn[ad_sn.obs['seq_type']=='10x_nuclear',],'sn')
 plot_umap(ad_sn,'sn') # plot umap and save fig
-umap_position = pd.DataFrame(ad_sn.obsm['X_umap'],index=ad_sn.obs_names,columns=['X','Y'])
+umap_position = .DataFrame(ad_sn.obsm['X_umap'],index=ad_sn.obs_names,columns=['X','Y'])
 exp_matrix = ad_sn.to_df()
 for i in sn_vmax_vmin_dict:  # plot each genes and save fig
     plot_umap_genes(umap_position,exp_matrix,'sn',i,sn_vmax_vmin_dict.get(i)[0],sn_vmax_vmin_dict.get(i)[1])
@@ -200,9 +200,9 @@ for indicator in ['DaNs','Gluts','Inhibitory','Microglia','Astrocytes','Oligo']:
 ad_putamen = sc.read('../data/putamen_umap.h5')
 color_label = [color_dict.get(i) for i in ad_putamen.obs['label'].cat.categories]
 ad_putamen.uns['label_colors']=color_label
-plot_PD_control_proportion(ad_putamen,'putamen')
+plot__control_proportion(ad_putamen,'putamen')
 plot_umap(ad_putamen,'putamen') # plot umap and save fig
-umap_position = pd.DataFrame(ad_putamen.obsm['X_umap'],index=ad_putamen.obs_names,columns=['X','Y'])
+umap_position = .DataFrame(ad_putamen.obsm['X_umap'],index=ad_putamen.obs_names,columns=['X','Y'])
 exp_matrix = ad_putamen.to_df()
 for i in putamen_vmax_vmin_dict:  # plot each genes and save fig
     plot_umap_genes(umap_position,exp_matrix,'putamen',i,putamen_vmax_vmin_dict.get(i)[0],putamen_vmax_vmin_dict.get(i)[1])
