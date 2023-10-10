@@ -24,7 +24,7 @@ fig,ax = plt.subplots(figsize=(10,3),dpi=600)
 plt.rcParams['font.sans-serif']='Arial'
 plt.rcParams['font.size']=7
 plt.rcParams['font.weight']='normal'
-sc.pl.DotPlot(ad_mk,groupby='label_9',var_names=var_names,categories_order=final_order,use_raw=False,ax=ax).style(cmap='GnBu',dot_edge_lw=0,largest_dot=160).show()
+sc.pl.DotPlot(ad_mk,groupby='label_subtype',var_names=var_names,categories_order=final_order,use_raw=False,ax=ax).style(cmap='GnBu',dot_edge_lw=0,largest_dot=160).show()
 fig.tight_layout()
 fig.savefig('./Figures/joint_marker_mk_DaNs_dotplot.pdf')
 
