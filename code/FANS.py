@@ -31,8 +31,8 @@ def plot_type_composition(plot_data,file_path):
     plt.title('Cell type composition within individual sample')
     fig.savefig(file_path)
   
-ad_snc = sc.read('./scvi_sorted_fx_refined_umap.h5')
-nUMI = pd.DataFrame(ad_snc.layers['counts'].sum(1))[0]
+ad_sn = sc.read('./fans_umap.h5')
+nUMI = pd.DataFrame(ad_sn.layers['counts'].sum(1))[0]
 fig,ax = plt.subplots(figsize=(3,3),dpi=300)
 nbin=200
 plt.hist(nUMI,bins=nbin,color='#008000')
@@ -52,7 +52,7 @@ plt.text(-500,5000,'*1,000')
 plt.title('UMI counts')
 fig.savefig('./figures/FASC_sample_info_detected_UMIs.pdf')
 
-n_genes = pd.DataFrame((ad_snc.layers['counts']>0).sum(1))[0]
+n_genes = pd.DataFrame((ad_sn.layers['counts']>0).sum(1))[0]
 fig,ax = plt.subplots(figsize=(3,3),dpi=300)
 nbin=90
 plt.hist(n_genes,bins=nbin,color='#2179B5')
@@ -72,9 +72,9 @@ plt.text(-500,1000,'*1,000')
 plt.title('Detected genes')
 fig.savefig('./figures/FASC_sample_info_detected_genes.pdf')
 
-plot_data = pd.DataFrame(columns =ad_snc.obs['label_main'].cat.categories,index=ad_snc.obs['sampleid'].cat.categories )
+plot_data = pd.DataFrame(columns =ad_sn.obs['label_main'].cat.categories,index=ad_sn.obs['sampleid'].cat.categories )
 for i in plot_data.columns:
-    each_sample_info = ad_snc[ad_snc.obs['label_main']==i,].obs['sampleid'].value_counts()
+    each_sample_info = ad_sn[ad_sn.obs['label_main']==i,].obs['sampleid'].value_counts()
     for j in plot_data.index:
         if j in each_sample_info.index:
             plot_data.loc[j,i]=each_sample_info[j]
@@ -96,5 +96,5 @@ fig,ax = plt.subplots(figsize=(5,5),dpi=600)
 plt.rcParams['font.sans-serif']='Arial'
 plt.rcParams['font.size']=7
 plt.rcParams['font.weight']='normal'
-sc.pl.umap(ad_snc,color='sampleid',ax=ax,frameon=False,title='',s=2.5)
+sc.pl.umap(ad_sn,color='sampleid',ax=ax,frameon=False,title='',s=2.5)
 fig.savefig(f'./figures/fasc_sampleid_umap.pdf')
