@@ -4,7 +4,7 @@ suppressPackageStartupMessages(library(SeuratDisk))
 suppressPackageStartupMessages(library(dplyr))
 library(ggplot2)
 Convert('../data/gluts_umap.h5ad',dest = "h5seurat", overwrite = TRUE)
-ad_exc <- LoadH5Seurat('../data/gluts_umap../data/gluts_umap.h5seurat',assays="RNA")
+ad_exc <- LoadH5Seurat('../data/gluts_umap.h5seurat',assays="RNA")
 vulnerable_sort <- c()
 for (i in ad_exc$label_5){
     if (i %in% c('Ex_MEIS2','Ex_MEIS1')){
