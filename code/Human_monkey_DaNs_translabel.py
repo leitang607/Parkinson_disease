@@ -4,7 +4,6 @@ import numpy as np
 import scanpy as sc
 import harmonypy as hm
 import os,sys
-sys.path.append('/mnt/f/Monkey_V1_crossheatmap')
 import seaborn as sns
 import matplotlib.pyplot as plt
 import SCCAF
@@ -32,7 +31,7 @@ def sccaf_predict(ad_mk_sele,ad_hu_sele):
     ad_mk_sele.obs['donor_id'] = ad_mk_sele.obs['sampleid']
     ad_mk_sele.obs['org']='monkey'
     ad_hu_sele.obs['org'] = 'human'
-    ad_mk_sele.obs = ad_mk_sele.obs.loc[:,['exp_condition','label_5','org']]
+    ad_mk_sele.obs = ad_mk_sele.obs.loc[:,['Condition','label_subtype','org']]
     ad = ad_hu_sele.concatenate(ad_mk_sele)
     sc.tl.pca(ad, use_highly_variable = False)
     sc.pp.neighbors(ad)
@@ -45,7 +44,6 @@ def sccaf_predict(ad_mk_sele,ad_hu_sele):
     sc.tl.umap(ad)
     ad.obsm['X_umapharmony'] = ad.obsm['X_umap']
     sc.pl.umap(ad, color=['org'])
-    sc.pl.umap(ad,color=['label_5','label_subclass'])
     ad_homo_temp=ad[ad.obs['org']=='human',]
     ad_mk_temp=ad[ad.obs['org']=='monkey',]
     y_prob, y_pred, y_test, clf, cvsm, acc = SCCAF.SCCAF_assessment(ad_homo_temp.obsm['X_harmonypca'], ad_homo_temp.obs['label_subclass'],n=200)
@@ -53,11 +51,11 @@ def sccaf_predict(ad_mk_sele,ad_hu_sele):
     plt.show()
     ad_mk_temp.obs['kamath'] = clf.predict(ad_mk_temp.obsm['X_harmonypca'])
     ad_mk_temp.obs_names= ad_mk_temp.obs_names.str.rsplit('-',1).str[0]
-    return ad_mk_temp.obs.loc[:,['label_5','kamath']]
+    return ad_mk_temp.obs.loc[:,['label_subtype','kamath']]
 
 
 if __name__ == '__main__':
-    ad_mk = sc.read('./DaNs_figout.h5')
+    ad_mk = sc.read('../data/DaNs_umap.h5')
     ad_hu = sc.read('../data/homo_DaNs_umap.h5')
     ad_hu = ad_hu[:,ad_hu.var_names.isin(ad_mk.var_names)]
     ad_mk = ad_mk[:,ad_hu.var_names]
@@ -71,4 +69,4 @@ if __name__ == '__main__':
             sccaf_predict_summary[f'hvg_{i}_intersection_length{len(gene_inter_intersection)}']=predict_table_intersection['kamath']
         predict_table_intergration = sccaf_predict(ad_mk[:,gene_intergration],ad_hu[:,gene_intergration])
         sccaf_predict_summary[f'hvg_{i}_intergration_length{len(gene_intergration)}'] = predict_table_intergration['kamath']
-    sccaf_predict_summary.to_csv('./sccaf_first_predict_result.csv')
+    sccaf_predict_summary.to_csv('../data/sccaf_first_predict_result.csv')
