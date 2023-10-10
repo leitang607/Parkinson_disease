@@ -26,10 +26,10 @@ plt.rcParams['font.sans-serif']='Arial'
 plt.rcParams['font.size']=7
 plt.rcParams['font.weight']='normal'
 categories_order = ['Glu_MEIS2','Glu_MEIS1','Glu_CLMN','Glu_DPYD','Glu_PCSK5','Glu_LMX1A']
-sc.pl.DotPlot(ad_glu,groupby='label_5',var_names=['MEIS2','MEIS1','CLMN','DPYD','PCSK5',\
+sc.pl.DotPlot(ad_glu,groupby='label_subtype',var_names=['MEIS2','MEIS1','CLMN','DPYD','PCSK5',\
                  'LMX1A','SORCS3','FOXP2'],categories_order=categories_order,use_raw=False,ax=ax).style(cmap='GnBu',largest_dot=250,dot_edge_lw=0).show()
 fig.tight_layout()
-fig.savefig('./Figures_pip_ver2/Figures2/exc_dotplot.pdf')
+fig.savefig('./figures/gluts_dotplot.pdf')
 
 
 
