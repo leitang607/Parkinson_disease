@@ -51,7 +51,7 @@ color_list = [colors.to_hex(i) for i in colors2]
 order = ['SOX6+_RYR3','SOX6+_CUX2','SOX6-_EBF1','SOX6-_CBLB','SOX6-_CALCR','SOX6-_COBLL1','SOX6-_SORCS3']
 color_order = color_list
 color_dict = dict(zip(order,color_order))
-ad_dans.uns['label_9_colors'] = [color_dict.get(i) for i in ad_dans.obs['label_9'].cat.categories]
+ad_dans.uns['label_subtype_colors'] = [color_dict.get(i) for i in ad_dans.obs['label_subtype'].cat.categories]
 fig,ax = plt.subplots(figsize=(4,3.5),dpi=600)
 plt.rcParams['font.sans-serif']='Arial'
 plt.rcParams['font.size']=7
