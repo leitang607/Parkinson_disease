@@ -87,7 +87,7 @@ plot_data = plot_data.loc[:,plot_order]
 color_dict={
     'DaNs': '#BF8219','Gluts': '#00835A','GABA': '#BF480D','HdNs': '#FF6600','Inhibitory': '#FFB307','Endothelial': '#A19922',
     'Ependymal': '#FFA388','Microglia': '#D64849','Astrocytes': '#6c00bf','OPC': '#74A0FF','NFOL': '#69A8E6','Oligo': '#0000ff','Vasc': '#807B30',
-    'SMC/VLMC':'#9A9a9a','doublets': '#d6d6d6','low_quality':'#669D6A','Immune': '#f252c5','CHAT IN':'#ff7f0e','PVALB/TH IN':'#c49c94',
+    'SMC/VLMC':'#9A9a9a','Immune': '#f252c5','CHAT IN':'#ff7f0e','PVALB/TH IN':'#c49c94',
     'SST/NPY IN':'#ffbb78','dSPN':'#98df8a','eSPN':'#1f77b4','iSPN':'#279e68'
 }
 fig_fasc = plot_type_composition(plot_data,'./figures/fig1_extend_nuclei_type_composition.pdf')
