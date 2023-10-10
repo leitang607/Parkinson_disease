@@ -3,7 +3,7 @@ suppressPackageStartupMessages(library(SeuratData))
 suppressPackageStartupMessages(library(SeuratDisk))
 suppressPackageStartupMessages(library(dplyr))
 library(ggplot2)
-ad <- readRDS('./all_dopamine_275856.Rdata')
+ad <- readRDS('./SN_umap.Rdata')
 Idents(ad) <- 'label_5'
 ad <- subset(ad,downsample=12000)
 ad <- NormalizeData(ad, normalization.method = "LogNormalize", scale.factor = 10000)
@@ -19,7 +19,7 @@ for (i in unique(ad$label_5)){
     write.csv(de_gene,file=paste0('./de_genes/snc_',i,'_degene.csv'))
 }
 
-ad_put <- readRDS('./all_dopamine_275856.Rdata')
+ad_put <- readRDS('./PT_umap.Rdata')
 ad_put <- NormalizeData(ad_put, normalization.method = "LogNormalize", scale.factor = 10000)
 all.genes <- rownames(ad_put)
 ad_put <- ScaleData(ad_put, features = all.genes)
