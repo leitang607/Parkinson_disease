@@ -95,10 +95,10 @@ plot_type_composition(sn_nuclei,'./figures/nuclei_type_composition.pdf')
 plot_type_composition(sn_cell,'./figures/cell_type_composition.pdf')
 
 each_sample_info = pd.read_csv('../data/each_sample_info.csv',index_col=0)
-color_dict = {'SNC':'#98df8a','Putaman':'#279e68','control':'#2E72A4','PD':'#BC2823'}
+color_dict = {'SN':'#98df8a','PT':'#279e68','control':'#2E72A4','MPTP':'#BC2823'}
 fig,ax = plt.subplots(6,1,figsize=(4,8),dpi=300)
 counter=0
-for i in plot_data.columns:
+for i in each_sample_info.columns:
     ax[5].bar(counter,each_sample_info.loc['n_genes',i],color='grey',width=1,edgecolor='white',linewidth=0.1)
     ax[5].set_xlim(-0.8,31.3)
     ax[5].spines['right'].set_visible(False)
