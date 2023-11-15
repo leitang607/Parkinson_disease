@@ -1,11 +1,11 @@
 library(Seurat)
 library(ggplot2)
 ad <- readRDS("./sn_umap.Rdata")
-Idents(ad) <- "label_subtype"
+Idents(ad) <- "label"
 re_levels <- c('Astrocytes','Gluts','Inhibitory','GABA', # nolint
                 'HdNs','DaNs','OPC','Oligo','Microglia','Immune','Endothelial','Vasc','Ependymal') # nolint
-ad$label_subtype <- factor(ad$label_subtype,levels = re_levels)
-Idents(ad) <- 'label_subtype' # nolint
+ad$label <- factor(ad$label,levels = re_levels)
+Idents(ad) <- 'label' # nolint
 violin_color <- c('#6c00bf','#00835A','#FFB307','#BF480D','#FF6600','#BF8219','#74A0FF','#0000ff','#D64849','#f252c5','#A19922','#807B30','#FFA388') # nolint
 ftr_Astrocytes <- c('AQP4', 'SLC4A4')
 ftr_Microglia <- c('MS4A7', 'CSF1R')
@@ -26,10 +26,10 @@ ggsave(violin_figure,width = 5,height = 5,filename = './Figures1/snc_violin_plot
 
 # For putamen
 ad <- readRDS('./putamen_figout.Rdata')# nolint
-Idents(ad) <- "label_subtype" 
+Idents(ad) <- "label" 
 re_levels <- c('Astrocytes','Gluts','eSPN','iSPN','dSPN','PVALB/TH IN','SST/NPY IN','CHAT IN','OPC','NFOL','Oligo','Microglia','Immune','Endothelial','Vasc') # nolint
-ad$label_subtype <- factor(ad$label_subtype,levels = re_levels)
-Idents(ad) <- 'label_subtype' # nolint
+ad$label_subtype <- factor(ad$label,levels = re_levels)
+Idents(ad) <- 'label' # nolint
 violin_color <- c('#6c00bf','#00835A','#1f77b4','#279e68','#98df8a','#c49c94','#ffbb78','#ff7f0e','#74A0FF','#0000ff','#D64849','#f252c5','#A19922','#807B30')# nolint
 #plot violin PLot
 ftr_Astrocytes <- c( 'AQP4','ALDOC')  # nolint
